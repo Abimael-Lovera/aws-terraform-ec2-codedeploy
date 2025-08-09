@@ -114,7 +114,7 @@ resource "aws_iam_role" "codedeploy_instance_role" {
 resource "aws_iam_role_policy_attachment" "codedeploy_instance" {
   role       = aws_iam_role.codedeploy_instance_role.name
   # Permissões mínimas para o agente CodeDeploy na instância
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2RoleforAWSCodeDeploy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch" {
