@@ -1,0 +1,232 @@
+# ========================================
+# AWS & Terraform Sensitive Files
+# ========================================
+
+# SSH Keys (NEVER commit private keys!)
+*.pem
+*.key
+*.ppk
+**/ssh/*
+EC2\ Key\ Pair\ SSH.pem
+
+# Terraform State Files
+terraform.tfstate
+terraform.tfstate.*
+terraform.tfstate.backup
+*.tfplan
+*.tfplan.*
+
+# Terraform Directory
+.terraform/
+.terraform.lock.hcl
+
+# Terraform Variable Files (may contain sensitive data)
+terraform.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+secrets.tfvars
+prod.tfvars
+
+# ========================================
+# Java & Maven
+# ========================================
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+
+# ========================================
+# IDE & Editor Files
+# ========================================
+
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+# ========================================
+# AWS & Deployment
+# ========================================
+
+# AWS CLI credentials
+.aws/credentials
+.aws/config
+
+# CodeDeploy packages
+*.zip
+deployment.zip
+deployment-*.zip
+
+# Application logs
+*.log
+logs/
+app.log
+/var/log/
+
+# Temporary deployment files
+.deploy/
+deploy/
+
+# ========================================
+# OS & System Files
+# ========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ========================================
+# Development & Testing
+# ========================================
+
+# Node.js (if using npm/yarn for frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test coverage
+coverage/
+*.lcov
+
+# ========================================
+# Documentation & Temporary Files
+# ========================================
+
+# Temporary documentation
+*.tmp.md
+*.bak
+*.swp
+*.swo
+*~
+
+# Compiled documentation
+docs/_build/
+docs/site/
+
+# ========================================
+# Security & Compliance
+# ========================================
+
+# Security scan results
+security-report.*
+*.sarif
+
+# Compliance reports
+compliance-*.json
+audit-*.log
+
+# Certificate files
+*.crt
+*.p12
+*.jks
+keystore.*
+
+# ========================================
+# Custom Project Files
+# ========================================
+
+# Custom scripts (if they contain sensitive data)
+*-local.sh
+*-dev.sh
+test-local.*
+
+# Backup files
+*.backup
+backup-*
+
+# Architecture diagrams (generated)
+architecture.png
+diagram.svg
+
+# Personal notes
+notes.txt
+TODO.md
+PERSONAL.md
