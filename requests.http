@@ -1,0 +1,20 @@
+### Variáveis (utilize REST Client)
+@baseUrl = http://localhost:8080
+
+### Healthcheck
+GET {{baseUrl}}/healthcheck
+Accept: application/json
+
+### Contador (chamar várias vezes para ver incremento)
+GET {{baseUrl}}/contador
+Accept: application/json
+
+### Exemplo alterando baseUrl para IP público (descomente e ajuste)
+# @baseUrl = http://<EC2_PUBLIC_IP>:8080
+# GET {{baseUrl}}/healthcheck
+# Accept: application/json
+
+### Loop (Extensão REST Client não suporta nativamente loops, use múltiplos blocos)
+GET {{baseUrl}}/contador
+GET {{baseUrl}}/contador
+GET {{baseUrl}}/contador
