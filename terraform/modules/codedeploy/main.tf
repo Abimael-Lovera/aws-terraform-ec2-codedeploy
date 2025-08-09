@@ -8,6 +8,12 @@ resource "aws_iam_role" "codedeploy_service_role" {
       Action = "sts:AssumeRole"
     }]
   })
+  tags = {
+    Name             = "${var.project_name}-${var.environment}-codedeploy-service-role"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "codedeploy_service" {
@@ -18,6 +24,12 @@ resource "aws_iam_role_policy_attachment" "codedeploy_service" {
 resource "aws_codedeploy_app" "this" {
   name             = "${var.project_name}-${var.environment}-app"
   compute_platform = "Server"
+  tags = {
+    Name             = "${var.project_name}-${var.environment}-app"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
+  }
 }
 
 resource "aws_codedeploy_deployment_group" "this" {
@@ -41,5 +53,12 @@ resource "aws_codedeploy_deployment_group" "this" {
   auto_rollback_configuration {
     enabled = true
     events  = ["DEPLOYMENT_FAILURE"]
+  }
+
+  tags = {
+    Name             = "${var.project_name}-${var.environment}-dg"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
   }
 }

@@ -47,9 +47,10 @@ resource "aws_security_group" "instance" {
   }
 
   tags = {
-    Name        = "${var.project_name}-${var.environment}-sg"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
+    Name             = "${var.project_name}-${var.environment}-sg"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
   }
 }
 
@@ -62,9 +63,10 @@ resource "aws_instance" "this" {
   key_name               = var.key_name
   iam_instance_profile   = aws_iam_instance_profile.codedeploy_instance_profile.name
   tags = {
-    Name        = "${var.project_name}-${var.environment}-ec2-${count.index}"
-    Environment = var.environment
-    ManagedBy   = "Terraform"
+    Name             = "${var.project_name}-${var.environment}-ec2-${count.index}"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
   }
   user_data = <<-EOT
               #!/bin/bash
@@ -101,6 +103,12 @@ resource "aws_iam_role" "codedeploy_instance_role" {
       Action = "sts:AssumeRole"
     }]
   })
+  tags = {
+    Name             = "${var.project_name}-${var.environment}-instance-role"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "codedeploy_instance" {
@@ -122,4 +130,10 @@ resource "aws_iam_role_policy_attachment" "ssm" {
 resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
   name = "${var.project_name}-${var.environment}-instance-profile"
   role = aws_iam_role.codedeploy_instance_role.name
+  tags = {
+    Name             = "${var.project_name}-${var.environment}-instance-profile"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
+  }
 }
