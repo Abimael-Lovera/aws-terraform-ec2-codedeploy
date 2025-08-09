@@ -4,8 +4,9 @@
 
 # Identidade do projeto
 project_name    = "contador-app"
-environment      = "dev"
+environment     = "dev"
 region          = "us-east-1"
+aws_profile     = "alm-yahoo-account"  # Profile AWS a ser usado
 
 # Infra / Instâncias
 instance_type    = "t2.micro"        # Free Tier

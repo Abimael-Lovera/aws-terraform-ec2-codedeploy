@@ -13,6 +13,12 @@ variable "region" {
 	default = "us-east-1"
 }
 
+variable "aws_profile" {
+	description = "AWS profile a ser usado para autenticação"
+	type        = string
+	default     = "alm-yahoo-account"
+}
+
 variable "instance_type" {
 	type    = string
 	default = "t2.micro"
