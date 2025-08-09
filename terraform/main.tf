@@ -28,7 +28,4 @@ module "codedeploy" {
   project_name      = var.project_name
   environment       = var.environment
   service_role_name = "${var.project_name}-codedeploy-role"
-  instance_tag_key  = "Name"
-  # Usa o primeiro nome de instância como referência (limitação atual para 1 instância alvo)
-  instance_tag_value= module.ec2.instance_names[0]
 }

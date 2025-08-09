@@ -27,9 +27,9 @@ resource "aws_codedeploy_deployment_group" "this" {
 
   ec2_tag_set {
     ec2_tag_filter {
-      key   = var.instance_tag_key
+      key   = "Environment"
       type  = "KEY_AND_VALUE"
-      value = var.instance_tag_value
+      value = var.environment
     }
   }
 
