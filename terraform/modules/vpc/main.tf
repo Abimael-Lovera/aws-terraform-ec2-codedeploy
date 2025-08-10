@@ -3,20 +3,14 @@ resource "aws_vpc" "this" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name             = "${var.project_name}-${var.environment}-vpc"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-vpc"
   }
 }
 
 resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
   tags = {
-    Name             = "${var.project_name}-${var.environment}-igw"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-igw"
   }
 }
 
@@ -27,10 +21,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
   tags = {
-    Name             = "${var.project_name}-${var.environment}-public-${count.index}"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-public-${count.index}"
   }
 }
 
@@ -43,10 +34,7 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.this.id
   }
   tags = {
-    Name             = "${var.project_name}-${var.environment}-public-rt"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-public-rt"
   }
 }
 

@@ -47,10 +47,7 @@ resource "aws_security_group" "instance" {
   }
 
   tags = {
-    Name             = "${var.project_name}-${var.environment}-sg"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-sg"
   }
 }
 
@@ -65,16 +62,13 @@ resource "aws_instance" "this" {
 
   root_block_device {
     volume_type           = "gp3"
-    volume_size           = 20 # 20GB para ter espaço suficiente
+    volume_size           = 2
     encrypted             = true
     delete_on_termination = true
   }
 
   tags = {
-    Name             = "${var.project_name}-${var.environment}-ec2-${count.index}"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-ec2-${count.index}"
   }
   user_data = <<-EOT
               #!/bin/bash
@@ -112,10 +106,7 @@ resource "aws_iam_role" "codedeploy_instance_role" {
     }]
   })
   tags = {
-    Name             = "${var.project_name}-${var.environment}-instance-role"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-instance-role"
   }
 }
 
@@ -162,9 +153,6 @@ resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
   name = "${var.project_name}-${var.environment}-instance-profile"
   role = aws_iam_role.codedeploy_instance_role.name
   tags = {
-    Name             = "${var.project_name}-${var.environment}-instance-profile"
-    Environment      = var.environment
-    ManagedBy        = "Terraform"
-    application-name = var.project_name
+    Name = "${var.project_name}-${var.environment}-instance-profile"
   }
 }
