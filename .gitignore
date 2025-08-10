@@ -251,7 +251,4 @@ build/
 out/
 
 target/
-app/target/classes/com/example/app/ApiController.class
-app/target/classes/com/example/app/Application.class
-app/target/classes/com/example/app/CounterService.class
-app/target/test-classes/com/example/app/ApiControllerTest.class
+app/target/
