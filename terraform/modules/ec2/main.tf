@@ -135,6 +135,29 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Política customizada para acesso ao bucket S3 de revisões
+resource "aws_iam_role_policy" "s3_revisions_access" {
+  name = "${var.project_name}-${var.environment}-s3-revisions-policy"
+  role = aws_iam_role.codedeploy_instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::${var.project_name}-codedeploy-revisions-*",
+          "arn:aws:s3:::${var.project_name}-codedeploy-revisions-*/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_instance_profile" "codedeploy_instance_profile" {
   name = "${var.project_name}-${var.environment}-instance-profile"
   role = aws_iam_role.codedeploy_instance_role.name

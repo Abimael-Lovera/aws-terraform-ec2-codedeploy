@@ -3,9 +3,9 @@ resource "aws_iam_role" "codedeploy_service_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Effect = "Allow",
+      Effect    = "Allow",
       Principal = { Service = "codedeploy.amazonaws.com" },
-      Action = "sts:AssumeRole"
+      Action    = "sts:AssumeRole"
     }]
   })
   tags = {
@@ -61,4 +61,48 @@ resource "aws_codedeploy_deployment_group" "this" {
     ManagedBy        = "Terraform"
     application-name = var.project_name
   }
+}
+
+# Bucket S3 para armazenar revisões do CodeDeploy
+resource "aws_s3_bucket" "codedeploy_revisions" {
+  bucket = "${var.project_name}-codedeploy-revisions-${random_string.bucket_suffix.result}"
+
+  tags = {
+    Name             = "${var.project_name}-codedeploy-revisions"
+    Environment      = var.environment
+    ManagedBy        = "Terraform"
+    application-name = var.project_name
+  }
+}
+
+resource "random_string" "bucket_suffix" {
+  length  = 8
+  special = false
+  upper   = false
+}
+
+resource "aws_s3_bucket_versioning" "codedeploy_revisions" {
+  bucket = aws_s3_bucket.codedeploy_revisions.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "codedeploy_revisions" {
+  bucket = aws_s3_bucket.codedeploy_revisions.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "codedeploy_revisions" {
+  bucket = aws_s3_bucket.codedeploy_revisions.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
