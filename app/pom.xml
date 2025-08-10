@@ -9,7 +9,7 @@
     <description>Demo Spring Boot app with healthcheck and contador</description>
     <properties>
         <java.version>17</java.version>
-        <spring.boot.version>3.2.5</spring.boot.version>
+        <spring.boot.version>3.5.4</spring.boot.version>
     </properties>
     <dependencyManagement>
         <dependencies>
