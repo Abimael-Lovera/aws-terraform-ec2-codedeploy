@@ -62,7 +62,7 @@ validate_instance() {
     
     # Extrair percentual de uso
     disk_usage=$(echo "$disk_info" | awk 'NR==2 {print $5}' | sed 's/%//')
-    if [ "$disk_usage" -gt 80 ]; then
+    if [[ "$disk_usage" =~ ^[0-9]+$ ]] && [ "$disk_usage" -gt 80 ]; then
         warning "Uso de disco alto: ${disk_usage}%"
     else
         echo "✓ Espaço em disco adequado: ${disk_usage}% usado"
@@ -82,7 +82,9 @@ validate_instance() {
     
     # 4. Verificar status do CodeDeploy Agent
     log "Verificando CodeDeploy Agent..."
-    codedeploy_status=$(ssh_exec $instance_ip "sudo systemctl is-active codedeploy-agent" "status do CodeDeploy")
+    # Executar comando sem usar ssh_exec para evitar misturar log com output
+    log "Executando: status do CodeDeploy em $instance_ip"
+    codedeploy_status=$(timeout 30 ssh $SSH_OPTIONS -i $KEY_FILE $USER@$instance_ip "sudo systemctl is-active codedeploy-agent" 2>/dev/null | tr -d '\n\r' | xargs)
     if [ "$codedeploy_status" = "active" ]; then
         echo "✓ CodeDeploy Agent está ativo"
         
@@ -91,7 +93,7 @@ validate_instance() {
         echo "Status detalhado do CodeDeploy:"
         echo "$codedeploy_running" | head -10
     else
-        error "CodeDeploy Agent não está ativo: $codedeploy_status"
+        error "CodeDeploy Agent não está ativo: [$codedeploy_status]"
         return 1
     fi
     

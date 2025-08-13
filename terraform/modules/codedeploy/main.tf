@@ -26,16 +26,35 @@ resource "aws_codedeploy_app" "this" {
   }
 }
 
-resource "aws_codedeploy_deployment_group" "this" {
+resource "aws_codedeploy_deployment_group" "groups" {
+  for_each              = length(var.deployment_groups) > 0 ? var.deployment_groups : { default = [] }
   app_name              = aws_codedeploy_app.this.name
-  deployment_group_name = "${var.project_name}-${var.environment}-dg"
+  deployment_group_name = length(var.deployment_groups) > 0 ? "${var.project_name}-${var.environment}-${each.key}" : "${var.project_name}-${var.environment}-dg"
   service_role_arn      = aws_iam_role.codedeploy_service_role.arn
 
-  ec2_tag_set {
-    ec2_tag_filter {
-      key   = "Environment"
-      type  = "KEY_AND_VALUE"
-      value = var.environment
+  # Se houver lista de nomes, cria um único tag set com múltiplos filtros (OR)
+  dynamic "ec2_tag_set" {
+    for_each = length(each.value) > 0 ? [1] : []
+    content {
+      dynamic "ec2_tag_filter" {
+        for_each = each.value
+        content {
+          key   = "Name"
+          type  = "KEY_AND_VALUE"
+          value = ec2_tag_filter.value
+        }
+      }
+    }
+  }
+
+  dynamic "ec2_tag_set" {
+    for_each = length(each.value) == 0 ? [1] : []
+    content {
+      ec2_tag_filter {
+        key   = "Environment"
+        type  = "KEY_AND_VALUE"
+        value = var.environment
+      }
     }
   }
 
@@ -50,7 +69,7 @@ resource "aws_codedeploy_deployment_group" "this" {
   }
 
   tags = {
-    Name = "${var.project_name}-${var.environment}-dg"
+    Name = length(var.deployment_groups) > 0 ? "${var.project_name}-${var.environment}-${each.key}" : "${var.project_name}-${var.environment}-dg"
   }
 }
 

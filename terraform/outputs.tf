@@ -9,9 +9,9 @@ output "codedeploy_application_name" {
   description = "Nome da aplicação CodeDeploy"
   value       = module.codedeploy.application_name
 }
-output "codedeploy_deployment_group_name" {
-  description = "Nome do deployment group"
-  value       = module.codedeploy.deployment_group_name
+output "codedeploy_deployment_group_names" {
+  description = "Mapa de deployment groups"
+  value       = module.codedeploy.deployment_group_names
 }
 output "s3_bucket_name" {
   description = "Nome do bucket S3 para revisões"

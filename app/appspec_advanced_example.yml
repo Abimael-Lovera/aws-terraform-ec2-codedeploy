@@ -1,0 +1,95 @@
+version: 0.0
+os: linux
+files:
+  - source: app-0.0.1-SNAPSHOT.jar
+    destination: /opt/app
+  - source: scripts/
+    destination: /opt/app/scripts
+  - source: config/
+    destination: /opt/app/config
+
+permissions:
+  - object: /opt/app
+    pattern: ".*"
+    owner: appuser
+    group: appuser
+    mode: 755
+  - object: /opt/app/scripts
+    pattern: ".*"
+    owner: root
+    group: root
+    mode: 755
+
+hooks:
+  # ===== FASE DE PREPARAÇÃO =====
+  BeforeInstall:
+    - location: scripts/install_dependencies.sh
+      timeout: 300
+      runas: root
+    # Backup removido - CodeDeploy já gerencia versões
+
+  # ===== FASE DE PARADA =====
+  ApplicationStop:
+    - location: scripts/drain_connections.sh
+      timeout: 60
+      runas: root
+    - location: scripts/stop_application.sh
+      timeout: 60
+      runas: root
+
+  # ===== FASE PÓS-INSTALAÇÃO =====
+  AfterInstall:
+    - location: scripts/install_systemd_service.sh
+      timeout: 120
+      runas: root
+    - location: scripts/setup_database_migration.sh
+      timeout: 300
+      runas: appuser
+    - location: scripts/configure_monitoring.sh
+      timeout: 60
+      runas: root
+
+  # ===== FASE DE INICIALIZAÇÃO =====
+  ApplicationStart:
+    - location: scripts/start_application.sh
+      timeout: 300
+      runas: root
+    - location: scripts/warmup_cache.sh
+      timeout: 180
+      runas: appuser
+
+  # ===== FASE DE VALIDAÇÃO =====
+  ValidateService:
+    - location: scripts/validate_service.sh
+      timeout: 120
+      runas: root
+    - location: scripts/smoke_tests.sh
+      timeout: 180
+      runas: appuser
+    - location: scripts/notify_deployment.sh
+      timeout: 30
+      runas: root
+
+  # ===== HOOKS PARA LOAD BALANCER (se você tiver ALB/ELB) =====
+  BeforeBlockTraffic:
+    - location: scripts/prepare_maintenance.sh
+      timeout: 60
+      runas: root
+
+  AfterBlockTraffic:
+    - location: scripts/maintenance_mode_on.sh
+      timeout: 30
+      runas: root
+
+  BeforeAllowTraffic:
+    - location: scripts/final_health_check.sh
+      timeout: 120
+      runas: root
+
+  AfterAllowTraffic:
+    - location: scripts/maintenance_mode_off.sh
+      timeout: 30
+      runas: root
+    - location: scripts/deployment_complete.sh
+      timeout: 60
+      runas: root

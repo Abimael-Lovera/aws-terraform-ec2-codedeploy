@@ -3,9 +3,9 @@ output "application_name" {
   value       = aws_codedeploy_app.this.name
 }
 
-output "deployment_group_name" {
-  description = "Nome do deployment group"
-  value       = aws_codedeploy_deployment_group.this.deployment_group_name
+output "deployment_group_names" {
+  description = "Mapa de deployment groups criados (nome lógico -> nome real)"
+  value       = { for k, dg in aws_codedeploy_deployment_group.groups : k => dg.deployment_group_name }
 }
 
 output "service_role_arn" {

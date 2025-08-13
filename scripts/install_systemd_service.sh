@@ -1,40 +1,42 @@
 #!/bin/bash -e
 # Cria/atualiza unidade systemd para a aplicação
-SERVICE_FILE=/etc/systemd/system/contador-app.service
-APP_DIR=/opt/app
-JAR=$(ls $APP_DIR/app-*.jar 2>/dev/null | head -n1)
-USER=appuser
-LOG_FILE=/var/log/app.log
 
-if [ -z "$JAR" ]; then
-  echo "[ERROR] JAR não encontrado em $APP_DIR" >&2
-  exit 1
+# Carrega configurações globais
+SCRIPT_DIR="$(dirname "$0")"
+source "${SCRIPT_DIR}/app_config.env"
+
+# Encontra o JAR da aplicação
+APP_JAR=$(find_app_jar)
+if [ $? -ne 0 ]; then
+    exit 1
 fi
 
-cat > $SERVICE_FILE <<EOF
+log_info "Criando/atualizando serviço systemd: $SYSTEMD_SERVICE_NAME"
+
+cat > "$SYSTEMD_SERVICE_FILE" <<EOF
 [Unit]
-Description=Contador Spring Boot App
-After=network.target
+Description=$SYSTEMD_DESCRIPTION
+After=$SYSTEMD_AFTER
 StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-User=$USER
-WorkingDirectory=$APP_DIR
-ExecStart=/usr/bin/java -jar $JAR
+User=$APP_USER
+WorkingDirectory=$APP_HOME
+ExecStart=/usr/bin/java -jar $APP_JAR
 Restart=on-failure
 RestartSec=5
-StandardOutput=append:$LOG_FILE
-StandardError=append:$LOG_FILE
+StandardOutput=append:$APP_LOG_FILE
+StandardError=append:$APP_LOG_FILE
 Environment=JAVA_OPTS="-Xms128m -Xmx256m"
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-chown root:root $SERVICE_FILE
-chmod 644 $SERVICE_FILE
+chown root:root "$SYSTEMD_SERVICE_FILE"
+chmod 644 "$SYSTEMD_SERVICE_FILE"
 systemctl daemon-reload
-systemctl enable contador-app.service
+systemctl enable "$SYSTEMD_SERVICE_NAME.service"
 
-echo "[INFO] systemd service instalado/atualizado"
+log_info "systemd service instalado/atualizado"

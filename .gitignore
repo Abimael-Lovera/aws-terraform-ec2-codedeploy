@@ -252,3 +252,4 @@ out/
 
 target/
 app/target/
+.terraform/

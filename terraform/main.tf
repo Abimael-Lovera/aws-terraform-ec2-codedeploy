@@ -30,4 +30,5 @@ module "codedeploy" {
   project_name      = var.project_name
   environment       = var.environment
   service_role_name = "${var.project_name}-codedeploy-role"
+  deployment_groups = var.deployment_groups
 }

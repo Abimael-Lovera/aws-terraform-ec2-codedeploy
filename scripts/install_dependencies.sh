@@ -1,19 +1,22 @@
 #!/bin/bash -e
 # Instala dependências necessárias para rodar a aplicação
 
-LOG_FILE=/var/log/app_install.log
-exec > >(tee -a ${LOG_FILE}) 2>&1
+# Carrega configurações globais
+SCRIPT_DIR="$(dirname "$0")"
+source "${SCRIPT_DIR}/app_config.env"
 
-echo "[INFO] Iniciando instalação de dependências"
+# Redireciona output para log
+exec > >(tee -a ${INSTALL_LOG_FILE}) 2>&1
 
-if ! command -v java >/dev/null 2>&1; then
-  echo "[INFO] Instalando Corretto 17"
-  dnf install -y java-17-amazon-corretto-headless
-fi
+log_info "Iniciando instalação de dependências"
 
-echo "[INFO] Criando usuário de aplicação se não existir"
-id -u appuser 2>/dev/null || useradd -r -s /sbin/nologin appuser
-mkdir -p /opt/app
-chown appuser:appuser /opt/app
+# Instala Java se necessário
+ensure_java
 
-echo "[INFO] Instalação concluída"
+# Cria usuário da aplicação
+ensure_app_user
+
+# Cria diretórios necessários
+ensure_directories
+
+log_info "Instalação concluída"
