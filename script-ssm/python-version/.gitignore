@@ -1,0 +1,17 @@
+# Ambiente virtual Python
+venv-appsettings-extractor/
+
+# Arquivos de backup extraídos
+config_backups_*/
+
+# Logs
+logs/
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Arquivos temporários
+*.tmp
+*.temp
